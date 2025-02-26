@@ -1,2 +1,4 @@
-print("Hello world!")
+
 # git init
+print("Hello Sasha")
+print("Привет Саша")
