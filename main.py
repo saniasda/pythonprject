@@ -1,20 +1,60 @@
-#домашнее задание 2.1
-number = int(input("Введите 4-значное число: "))
-num1 = number // 1000
-num2 = number // 100 % 10
-num3 = number // 10 % 10
-num4 = number % 10
-print(num1,num2,num3,num4, sep="\n")
+#Домашнее задание 3.1
+number = int(input("Введите первое число: "))
+number1 = int(input("Введите второе число: "))
+operation = input("Введите операцию: \n+\n-\n*\n/\n")
+if operation == "+" :
+    result = number + number1
+    print(f"Результат: {result}")
+elif operation == "-":
+    result = number - number1
+    print(f"Результат: {result}")
+elif operation == "*":
+    result = number * number1
+    print(f"Результат: {result}")
+elif operation == "/":
+    if number1 != 0:
+        result = number / number1
+        print(f"Результат {result}")
+    else:
+        print("Деление на 0 невозможно")
 
-#домашнее задание 2.2
+#v2 case
+num1 = int(input("Введите первое число: "))
+num2 = int(input("Введите второе число: "))
+operation1 = input("Введите операцию: \n+\n-\n*\n/\n")
+match operation1:
+    case "+":
+        result = num1 + num2
+        print(f"Результат: {result}")
+    case "-":
+        result = num1 - num2
+        print(f"Результат: {result}")
+    case "*":
+        result = num1 * num2
+        print(f"Результат {result}")
+    case "/":
+        if num2 != 0:
+            result = num1 / num2
+            print(f"Результат: {result}")
+        else:
+            print("Деление на 0 невозможно")
 
-number1 = int(input("Введите 5-значное число: "))
+#Домашнее задание 3.2
+nums = [12, 3, 4, 10, 8]
+if len(nums) > 0:
+    nums.insert(0, nums[-1])
+    nums.pop()
+print(nums)
 
-n1 = number1 % 10
-n2 = number1 // 10 % 10
-n3 = number1 // 100 % 10
-n4 = number1 // 1000 % 10
-n5 = number1 // 10000
+#Домашнее задание 3.3
+nums1 = [1, 2, 3, 4, 5, 6]
+middle_index = len(nums1) // 2
 
-result = n1 * 10000 + n2 * 1000 + n3 * 100 + n4 * 10 + n5
+if len(nums1) % 2 != 0:
+    middle_index += 1
+
+part1 = nums1[:middle_index]
+part2 = nums1[middle_index:]
+result = [part1, part2]
 print(result)
+
