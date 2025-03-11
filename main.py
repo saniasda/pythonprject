@@ -1,60 +1,35 @@
-#Домашнее задание 3.1
-number = int(input("Введите первое число: "))
-number1 = int(input("Введите второе число: "))
-operation = input("Введите операцию: \n+\n-\n*\n/\n")
-if operation == "+" :
-    result = number + number1
-    print(f"Результат: {result}")
-elif operation == "-":
-    result = number - number1
-    print(f"Результат: {result}")
-elif operation == "*":
-    result = number * number1
-    print(f"Результат: {result}")
-elif operation == "/":
-    if number1 != 0:
-        result = number / number1
-        print(f"Результат {result}")
-    else:
-        print("Деление на 0 невозможно")
+#Домашнее задание 4.1
 
-#v2 case
-num1 = int(input("Введите первое число: "))
-num2 = int(input("Введите второе число: "))
-operation1 = input("Введите операцию: \n+\n-\n*\n/\n")
-match operation1:
-    case "+":
-        result = num1 + num2
-        print(f"Результат: {result}")
-    case "-":
-        result = num1 - num2
-        print(f"Результат: {result}")
-    case "*":
-        result = num1 * num2
-        print(f"Результат {result}")
-    case "/":
-        if num2 != 0:
-            result = num1 / num2
-            print(f"Результат: {result}")
-        else:
-            print("Деление на 0 невозможно")
+numbers = [3, 0, 4, 5, 0, 7, 8, 0, 15, 12, 0]
+min_value = min(numbers)
+max_value = max(numbers)
+min_value_index = numbers.index(min_value)
+max_value_index = numbers.index(max_value)
+numbers[min_value_index], numbers[max_value_index] = numbers[max_value_index], numbers[min_value_index]
+num1 = [num for num in numbers if num != 0]
+num2 = [0] * numbers.count(0)
+numbers = num1 + num2
+print(numbers)
 
-#Домашнее задание 3.2
-nums = [12, 3, 4, 10, 8]
-if len(nums) > 0:
-    nums.insert(0, nums[-1])
-    nums.pop()
-print(nums)
+#Домашнее задание 4.2
 
-#Домашнее задание 3.3
-nums1 = [1, 2, 3, 4, 5, 6]
-middle_index = len(nums1) // 2
-
-if len(nums1) % 2 != 0:
-    middle_index += 1
-
-part1 = nums1[:middle_index]
-part2 = nums1[middle_index:]
-result = [part1, part2]
+numbers = [0, 1, 7, 2, 4, 8]
+print(numbers)
+num1 = numbers[::2]
+num2 = sum(num1)
+result = num2 * numbers[-1] \
+    if numbers else 0
 print(result)
 
+#Домашнее задание 4.3
+
+import random
+
+NUMS_SIZE = 10
+numbers = []
+#
+for i in range(NUMS_SIZE):
+    numbers.append(random.randint(1, 10))
+list = [numbers[0], numbers[2], numbers[-2]]
+print(numbers)
+print(list)
