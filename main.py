@@ -1,43 +1,52 @@
-#Homework 10.1
-def pow(x):
-    return x ** 2
-
-def some_gen(begin, end, func):
-    yield begin
-    current = begin
-    for _ in range(end - 1):
-        current = func(current)
-        yield current
+#Домашнее задание 11.1
+def prime_generator(end):
+    for num in range(2, end + 1):
+        for i in range(2, int(num ** 0.5) + 1):
+            if num % i == 0:
+                break
+        else:
+            yield num
 
 from inspect import isgenerator
 
-gen = some_gen(2, 4, pow)
-assert isgenerator(gen) == True, 'Test1'
-assert list(gen) == [2, 4, 16, 256], 'Test2'
+gen = prime_generator(1)
+assert isgenerator(gen) == True, 'Test0'
+assert list(prime_generator(10)) == [2, 3, 5, 7], 'Test1'
+assert list(prime_generator(15)) == [2, 3, 5, 7, 11, 13], 'Test2'
+assert list(prime_generator(29)) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29], 'Test3'
+print('Ok')
+
+#Домашнее задание 11.2
+def generate_cube_numbers(end):
+    num = 2
+    while True:
+        cube = num ** 3
+        if cube > end:
+            return
+        yield cube
+        num += 1
 
 
-print('OK')
+from inspect import isgenerator
 
-#Домшанее задание 10.2
-def first_word(text):
-    text = text.replace('.', ' ').replace(',', ' ')
-    return text.split()[0]
+gen = generate_cube_numbers(1)
+assert isgenerator(gen) == True, 'Test0'
+assert list(generate_cube_numbers(10)) == [8], 'оскільки воно менше 10.'
+assert list(generate_cube_numbers(100)) == [8, 27, 64], '5 у кубі це 125, а воно вже більше 100'
+assert list(generate_cube_numbers(1000)) == [8, 27, 64, 125, 216, 343, 512, 729, 1000], '10 у кубі це 1000'
+print('Ok')
 
-assert first_word("Hello world") == "Hello", 'Test1'
-assert first_word("greetings, friends") == "greetings", 'Test2'
-assert first_word("don't touch it") == "don't", 'Test3'
-assert first_word(".., and so on ...") == "and", 'Test4'
-assert first_word("hi") == "hi", 'Test5'
-assert first_word("Hello.World") == "Hello", 'Test6'
+#Домашнее задание 11.3
+def is_even(number):
+    text = str(bin(number))
+    if text[len(text) - 1] == '0':
+        return True
+    return False
 
 
-print('OK')
-
-#Домашнее задание 10.3
-def is_even(digit):
-    return digit % 2 == 0
-
-assert is_even(2) == True, 'Test1'
-assert is_even(5) == False, 'Test2'
-assert is_even(0) == True, 'Test3'
-print('OK')
+assert is_even(0) == True
+assert is_even(1) == False
+assert is_even(2) == True
+assert is_even(9999999999999998) == True
+assert is_even(9999999999999999) == False
+print('Усі тести пройдено!')
