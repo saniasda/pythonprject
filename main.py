@@ -1,52 +1,79 @@
-#Домашнее задание 11.1
-def prime_generator(end):
-    for num in range(2, end + 1):
-        for i in range(2, int(num ** 0.5) + 1):
-            if num % i == 0:
-                break
-        else:
-            yield num
+#Домашнее задание 12.1
+import codecs
+import re
 
-from inspect import isgenerator
+def delete_html_tags(html_file, result_file='cleaned.txt'):
+    with codecs.open(html_file, 'r', 'utf-8') as file:
+        html = file.read()
+    cleaned_text = re.sub(r'<[^>]*>', '', html)
+    lines = cleaned_text.split('\n')
+    cleaned_lines = [line.strip() for line in lines if line.strip() != '']
+    with codecs.open(result_file, 'w', 'utf-8') as file:
+        file.write('\n'.join(cleaned_lines))
 
-gen = prime_generator(1)
-assert isgenerator(gen) == True, 'Test0'
-assert list(prime_generator(10)) == [2, 3, 5, 7], 'Test1'
-assert list(prime_generator(15)) == [2, 3, 5, 7, 11, 13], 'Test2'
-assert list(prime_generator(29)) == [2, 3, 5, 7, 11, 13, 17, 19, 23, 29], 'Test3'
-print('Ok')
+delete_html_tags('draft.html')
 
-#Домашнее задание 11.2
-def generate_cube_numbers(end):
-    num = 2
-    while True:
-        cube = num ** 3
-        if cube > end:
-            return
-        yield cube
-        num += 1
+#Домашнее задание 12.2
+class Item:
 
+    def __init__(self, name, price, description, dimensions):
+        self.price = price
+        self.description = description
+        self.dimensions = dimensions
+        self.name = name
 
-from inspect import isgenerator
-
-gen = generate_cube_numbers(1)
-assert isgenerator(gen) == True, 'Test0'
-assert list(generate_cube_numbers(10)) == [8], 'оскільки воно менше 10.'
-assert list(generate_cube_numbers(100)) == [8, 27, 64], '5 у кубі це 125, а воно вже більше 100'
-assert list(generate_cube_numbers(1000)) == [8, 27, 64, 125, 216, 343, 512, 729, 1000], '10 у кубі це 1000'
-print('Ok')
-
-#Домашнее задание 11.3
-def is_even(number):
-    text = str(bin(number))
-    if text[len(text) - 1] == '0':
-        return True
-    return False
+    def __str__(self): # lemon, price: 5
+        return f"{self.name}, price: {self.price}"
 
 
-assert is_even(0) == True
-assert is_even(1) == False
-assert is_even(2) == True
-assert is_even(9999999999999998) == True
-assert is_even(9999999999999999) == False
-print('Усі тести пройдено!')
+class User:
+
+    def __init__(self, name, surname, numberphone):
+        self.name = name
+        self.surname = surname
+        self.numberphone = numberphone
+
+    def __str__(self):
+        return f"{self.name.title()} {self.surname.title()}"
+
+
+class Purchase:
+    def __init__(self, user):
+        self.products = {}
+        self.user = user
+        self.total = 0
+
+    def add_item(self, item, cnt):
+        self.products[item] = cnt
+
+    def __str__(self):
+        all_products = ""
+        for product, count in self.products.items():
+            all_products += f"\n{product.name}: {count} pcs."
+        return f"User: {self.user}\nItems:{all_products}"
+
+
+    def get_total(self):
+        all_sum = 0
+        for product, count in self.products.items():
+            all_sum += (product.price * count)
+        return all_sum
+
+
+lemon = Item('lemon', 5, "yellow", "small")
+apple = Item('apple', 2, "red", "middle")
+buyer = User("Ivan", "Ivanov", "02628162")
+cart = Purchase(buyer)
+cart.add_item(lemon, 4)
+cart.add_item(apple, 20)
+print(cart)
+print(cart.get_total())
+
+
+assert isinstance(cart.user, User) is True, 'Екземпляр класу User'
+assert cart.get_total() == 60, "Всього 60"
+assert cart.get_total() == 60, 'Повинно залишатися 60!'
+cart.add_item(apple, 10)
+print(cart)
+
+assert cart.get_total() == 40
