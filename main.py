@@ -1,79 +1,118 @@
-#Домашнее задание 12.1
-import codecs
-import re
+#Домашнее задание 13.1
+class Human:
 
-def delete_html_tags(html_file, result_file='cleaned.txt'):
-    with codecs.open(html_file, 'r', 'utf-8') as file:
-        html = file.read()
-    cleaned_text = re.sub(r'<[^>]*>', '', html)
-    lines = cleaned_text.split('\n')
-    cleaned_lines = [line.strip() for line in lines if line.strip() != '']
-    with codecs.open(result_file, 'w', 'utf-8') as file:
-        file.write('\n'.join(cleaned_lines))
-
-delete_html_tags('draft.html')
-
-#Домашнее задание 12.2
-class Item:
-
-    def __init__(self, name, price, description, dimensions):
-        self.price = price
-        self.description = description
-        self.dimensions = dimensions
-        self.name = name
-
-    def __str__(self): # lemon, price: 5
-        return f"{self.name}, price: {self.price}"
-
-
-class User:
-
-    def __init__(self, name, surname, numberphone):
-        self.name = name
-        self.surname = surname
-        self.numberphone = numberphone
+    def __init__(self, gender, age, first_name, last_name):
+        self.gender = gender
+        self.age = age
+        self.first_name = first_name
+        self.last_name = last_name
 
     def __str__(self):
-        return f"{self.name.title()} {self.surname.title()}"
+        return f"{self.first_name} {self.last_name}, {self.gender}, {self.age} age"
 
 
-class Purchase:
-    def __init__(self, user):
-        self.products = {}
-        self.user = user
-        self.total = 0
+class Student(Human):
 
-    def add_item(self, item, cnt):
-        self.products[item] = cnt
+    def __init__(self, gender, age, first_name, last_name, record_book):
+        super().__init__(gender, age, first_name, last_name)
+        self.record_book = record_book
 
     def __str__(self):
-        all_products = ""
-        for product, count in self.products.items():
-            all_products += f"\n{product.name}: {count} pcs."
-        return f"User: {self.user}\nItems:{all_products}"
+        return f"{super().__str__()}, test: {self.record_book}"
 
 
-    def get_total(self):
-        all_sum = 0
-        for product, count in self.products.items():
-            all_sum += (product.price * count)
-        return all_sum
+class Group:
+
+    def __init__(self, number):
+        self.number = number
+        self.group = set()
+
+    def add_student(self, student):
+        if isinstance(student, Student):
+            self.group.add(student)
+
+    def find_student(self, last_name):
+        for student in self.group:
+            if student.last_name == last_name:
+                return student
+        return None
+
+    def delete_student(self, last_name):
+        student = self.find_student(last_name)
+        if student:
+            self.group.remove(student)
+
+    def __str__(self):
+        all_students = '\n'.join(str(student) for student in self.group)
+        return f'Group: {self.number}\n{all_students}'
 
 
-lemon = Item('lemon', 5, "yellow", "small")
-apple = Item('apple', 2, "red", "middle")
-buyer = User("Ivan", "Ivanov", "02628162")
-cart = Purchase(buyer)
-cart.add_item(lemon, 4)
-cart.add_item(apple, 20)
-print(cart)
-print(cart.get_total())
+st1 = Student('Male', 30, 'Steve', 'Jobs', 'AN142')
+st2 = Student('Female', 25, 'Liza', 'Taylor', 'AN145')
+gr = Group('PD1')
+gr.add_student(st1)
+gr.add_student(st2)
+
+print(gr)
+assert str(gr.find_student('Jobs')) == str(st1), 'Test1'
+assert gr.find_student('Jobs2') is None, 'Test2'
+assert isinstance(gr.find_student('Jobs'), Student) is True, 'Метод поиска должен возвращать экземпляр'
+
+gr.delete_student('Taylor')
+print(gr)  # # Only one student
+
+gr.delete_student('Taylor')  # No error!
+
+#Домашнее задание 13.2
+class Counter:
+    def __init__(self, current=1, min_value=0, max_value=10):
+        self.current = current
+        self.min_value = min_value
+        self.max_value = max_value
+
+    def set_current(self, start):
+        if start < self.min_value or start > self.max_value:
+            raise ValueError(f"Incorrect value")
+        self.current = start
+
+    def set_max(self, max_max):
+        self.max_value = max_max
+
+    def set_min(self, min_min):
+        self.min_value = min_min
+
+    def step_up(self):
+        self.set_current(self.current + 1)
+
+    def step_down(self):
+        self.set_current(self.current - 1)
+
+    def get_current(self):
+        return self.current
 
 
-assert isinstance(cart.user, User) is True, 'Екземпляр класу User'
-assert cart.get_total() == 60, "Всього 60"
-assert cart.get_total() == 60, 'Повинно залишатися 60!'
-cart.add_item(apple, 10)
-print(cart)
+counter = Counter()
+counter.set_current(7)
+counter.step_up()
+counter.step_up()
+counter.step_up()
+print(counter.get_current())
+assert counter.get_current() == 10, 'Test1'
+try:
+    counter.step_up()  # ValueError
+except ValueError as e:
+    print(e)  # Достигнут максимум
+assert counter.get_current() == 10, 'Test2'
 
-assert cart.get_total() == 40
+counter.set_min(7)
+counter.step_down()
+counter.step_down()
+counter.step_down()
+print(counter.get_current())
+assert counter.get_current() == 7, 'Test3'
+try:
+    counter.step_down()  # ValueError
+except ValueError as e:
+    print(e)  # Достигнут минимум
+assert counter.get_current() == 7, 'Test4'
+
