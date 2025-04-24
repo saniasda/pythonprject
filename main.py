@@ -1,6 +1,10 @@
-#Домашнее задание 13.1
-class Human:
+class GroupFullException(Exception):
+    def __init__(self, message="Группа начисливает 10 студентов"):
+        self.message = message
+        super().__init__(self.message)
 
+
+class Human:
     def __init__(self, gender, age, first_name, last_name):
         self.gender = gender
         self.age = age
@@ -12,7 +16,6 @@ class Human:
 
 
 class Student(Human):
-
     def __init__(self, gender, age, first_name, last_name, record_book):
         super().__init__(gender, age, first_name, last_name)
         self.record_book = record_book
@@ -22,14 +25,16 @@ class Student(Human):
 
 
 class Group:
-
     def __init__(self, number):
         self.number = number
         self.group = set()
 
     def add_student(self, student):
-        if isinstance(student, Student):
-            self.group.add(student)
+        if not isinstance(student, Student):
+            return
+        if len(self.group) >= 10:
+            raise GroupFullException()
+        self.group.add(student)
 
     def find_student(self, last_name):
         for student in self.group:
@@ -47,72 +52,13 @@ class Group:
         return f'Group: {self.number}\n{all_students}'
 
 
-st1 = Student('Male', 30, 'Steve', 'Jobs', 'AN142')
-st2 = Student('Female', 25, 'Liza', 'Taylor', 'AN145')
 gr = Group('PD1')
-gr.add_student(st1)
-gr.add_student(st2)
+
+for i in range(10):
+    try:
+        student = Student('Male', 20+i, f'Name{i}', f'LastName{i}', f'RB{i}')
+        gr.add_student(student)
+    except GroupFullException as e:
+        print(f"Нельзя добавлять больше 10ти студентов {i}: {e}")
 
 print(gr)
-assert str(gr.find_student('Jobs')) == str(st1), 'Test1'
-assert gr.find_student('Jobs2') is None, 'Test2'
-assert isinstance(gr.find_student('Jobs'), Student) is True, 'Метод поиска должен возвращать экземпляр'
-
-gr.delete_student('Taylor')
-print(gr)  # # Only one student
-
-gr.delete_student('Taylor')  # No error!
-
-#Домашнее задание 13.2
-class Counter:
-    def __init__(self, current=1, min_value=0, max_value=10):
-        self.current = current
-        self.min_value = min_value
-        self.max_value = max_value
-
-    def set_current(self, start):
-        if start < self.min_value or start > self.max_value:
-            raise ValueError(f"Incorrect value")
-        self.current = start
-
-    def set_max(self, max_max):
-        self.max_value = max_max
-
-    def set_min(self, min_min):
-        self.min_value = min_min
-
-    def step_up(self):
-        self.set_current(self.current + 1)
-
-    def step_down(self):
-        self.set_current(self.current - 1)
-
-    def get_current(self):
-        return self.current
-
-
-counter = Counter()
-counter.set_current(7)
-counter.step_up()
-counter.step_up()
-counter.step_up()
-print(counter.get_current())
-assert counter.get_current() == 10, 'Test1'
-try:
-    counter.step_up()  # ValueError
-except ValueError as e:
-    print(e)  # Достигнут максимум
-assert counter.get_current() == 10, 'Test2'
-
-counter.set_min(7)
-counter.step_down()
-counter.step_down()
-counter.step_down()
-print(counter.get_current())
-assert counter.get_current() == 7, 'Test3'
-try:
-    counter.step_down()  # ValueError
-except ValueError as e:
-    print(e)  # Достигнут минимум
-assert counter.get_current() == 7, 'Test4'
-
