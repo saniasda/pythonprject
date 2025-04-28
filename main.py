@@ -1,64 +1,98 @@
-class GroupFullException(Exception):
-    def __init__(self, message="Группа начисливает 10 студентов"):
-        self.message = message
-        super().__init__(self.message)
+#Домашнее задание 15.2
+class Fraction:
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
 
+    def _reduce(self):
+        def gcd(a, b):
+            while b:
+                a, b = b, a % b
+            return a
+        g = gcd(self.a, self.b)
+        return Fraction(self.a // g, self.b // g)
 
-class Human:
-    def __init__(self, gender, age, first_name, last_name):
-        self.gender = gender
-        self.age = age
-        self.first_name = first_name
-        self.last_name = last_name
+    def __mul__(self, other):
+        num = self.a * other.a
+        den = self.b * other.b
+        return Fraction(num, den)
 
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}, {self.gender}, {self.age} age"
+    def __add__(self, other):
+        num = self.a * other.b + other.a * self.b
+        den = self.b * other.b
+        return Fraction(num, den)
 
+    def __sub__(self, other):
+        num = self.a * other.b - other.a * self.b
+        den = self.b * other.b
+        return Fraction(num, den)
 
-class Student(Human):
-    def __init__(self, gender, age, first_name, last_name, record_book):
-        super().__init__(gender, age, first_name, last_name)
-        self.record_book = record_book
+    def __eq__(self, other):
+        f1 = self._reduce()
+        f2 = other._reduce()
+        return f1.a == f2.a and f1.b == f2.b
 
-    def __str__(self):
-        return f"{super().__str__()}, test: {self.record_book}"
+    def __gt__(self, other):
+        return self.a * other.b > other.a * self.b
 
-
-class Group:
-    def __init__(self, number):
-        self.number = number
-        self.group = set()
-
-    def add_student(self, student):
-        if not isinstance(student, Student):
-            return
-        if len(self.group) >= 10:
-            raise GroupFullException()
-        self.group.add(student)
-
-    def find_student(self, last_name):
-        for student in self.group:
-            if student.last_name == last_name:
-                return student
-        return None
-
-    def delete_student(self, last_name):
-        student = self.find_student(last_name)
-        if student:
-            self.group.remove(student)
+    def __lt__(self, other):
+        return self.a * other.b < other.a * self.b
 
     def __str__(self):
-        all_students = '\n'.join(str(student) for student in self.group)
-        return f'Group: {self.number}\n{all_students}'
+        return f"Fraction: {self.a}, {self.b}"
+
+f_a = Fraction(2, 3)
+f_b = Fraction(3, 6)
+f_c = f_b + f_a
+assert str(f_c) == 'Fraction: 21, 18'
+f_d = f_b * f_a
+assert str(f_d) == 'Fraction: 6, 18'
+f_e = f_a - f_b
+assert str(f_e) == 'Fraction: 3, 18'
+
+assert f_d < f_c  # True
+assert f_d > f_e  # True
+assert f_a != f_b  # True
+f_1 = Fraction(2, 4)
+f_2 = Fraction(3, 6)
+assert f_1 == f_2  # True
+print('OK')
+
+#Домашнее задание 15.1
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def get_square(self):
+        return self.width * self.height
+
+    def __eq__(self, other):
+        return self.get_square() == other.get_square()
+
+    def __add__(self, other):
+        total_area = self.get_square() + other.get_square()
+        side = total_area ** 0.5
+        return Rectangle(side, side)
+
+    def __mul__(self, n):
+        new_area = self.get_square() * n
+        side = new_area ** 0.5
+        return Rectangle(side, side)
+
+    def __str__(self):
+        return f"{self.width} x {self.height}"
 
 
-gr = Group('PD1')
+r1 = Rectangle(2, 4)
+r2 = Rectangle(3, 6)
+assert r1.get_square() == 8, 'Test1'
+assert r2.get_square() == 18, 'Test2'
 
-for i in range(10):
-    try:
-        student = Student('Male', 20+i, f'Name{i}', f'LastName{i}', f'RB{i}')
-        gr.add_student(student)
-    except GroupFullException as e:
-        print(f"Нельзя добавлять больше 10ти студентов {i}: {e}")
+r3 = r1 + r2
+assert round(r3.get_square(), 5) == 26, 'Test3'
 
-print(gr)
+r4 = r1 * 4
+assert round(r4.get_square(), 5) == 32, 'Test4'
+
+assert Rectangle(3, 6) == Rectangle(2, 9), 'Test5'
